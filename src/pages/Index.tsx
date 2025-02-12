@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Briefcase, User, Plus, X } from "lucide-react";
+import { Briefcase, User, Plus, X, CreditCard, Wallet, Info, ArrowLeft, BanknoteIcon } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { toast } from "sonner";
@@ -12,6 +12,7 @@ const Index = () => {
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [whitelist, setWhitelist] = useState<string[]>([]);
   const [newEmail, setNewEmail] = useState("");
+  const [selectedPayment, setSelectedPayment] = useState<string | null>(null);
   const isMobile = useIsMobile();
 
   const addToWhitelist = () => {
@@ -40,9 +41,10 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md bg-white rounded-lg shadow-lg overflow-hidden">
-        <div className="bg-primary p-4">
-          <h1 className="text-2xl font-semibold text-white">
-            Trip Details
+        <div className="bg-[#E54D51] p-4 flex items-center gap-3">
+          <ArrowLeft className="w-6 h-6 text-white cursor-pointer" />
+          <h1 className="text-xl font-semibold text-white">
+            Select an option to pay
           </h1>
         </div>
 
@@ -75,6 +77,105 @@ const Index = () => {
               </button>
             </div>
           </Card>
+
+          {selectedType === "personal" && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-4"
+            >
+              <div className="space-y-2">
+                {/* Payment Options */}
+                <button
+                  onClick={() => setSelectedPayment("ideal")}
+                  className={`w-full flex items-center p-4 rounded-lg border ${
+                    selectedPayment === "ideal" ? "border-[#E54D51]" : "border-gray-200"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    checked={selectedPayment === "ideal"}
+                    onChange={() => setSelectedPayment("ideal")}
+                    className="mr-3"
+                  />
+                  <BanknoteIcon className="w-5 h-5 mr-3 text-gray-600" />
+                  <span className="font-medium">iDEAL</span>
+                </button>
+
+                <button
+                  onClick={() => setSelectedPayment("card")}
+                  className={`w-full flex items-center p-4 rounded-lg border ${
+                    selectedPayment === "card" ? "border-[#E54D51]" : "border-gray-200"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    checked={selectedPayment === "card"}
+                    onChange={() => setSelectedPayment("card")}
+                    className="mr-3"
+                  />
+                  <CreditCard className="w-5 h-5 mr-3 text-gray-600" />
+                  <span className="font-medium">Card</span>
+                </button>
+
+                <button
+                  onClick={() => setSelectedPayment("wallet")}
+                  className={`w-full flex items-center justify-between p-4 rounded-lg border ${
+                    selectedPayment === "wallet" ? "border-[#E54D51]" : "border-gray-200"
+                  }`}
+                >
+                  <div className="flex items-center">
+                    <input
+                      type="radio"
+                      checked={selectedPayment === "wallet"}
+                      onChange={() => setSelectedPayment("wallet")}
+                      className="mr-3"
+                    />
+                    <Wallet className="w-5 h-5 mr-3 text-gray-600" />
+                    <span className="font-medium">Wallet</span>
+                  </div>
+                  <span className="font-medium">€ 18,50</span>
+                </button>
+              </div>
+
+              {/* Wallet Info */}
+              <div className="bg-[#FFF5F5] p-4 rounded-lg flex gap-3">
+                <Info className="w-5 h-5 text-[#E54D51] flex-shrink-0 mt-1" />
+                <p className="text-[#E54D51] text-sm">
+                  A wallet system stores funds for digital use, eliminating repeated bank or card transactions. Users deposit money once, and then use the balance for transactions, offering efficiency and security for high-transaction platforms.
+                </p>
+              </div>
+
+              {/* Price Summary */}
+              <div className="space-y-4 pt-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Base Fare</span>
+                  <span className="font-medium">€ 8,10</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Total Discount</span>
+                  <span className="font-medium">€ 0,00</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Service Fee</span>
+                  <span className="font-medium">€ 0,60</span>
+                </div>
+                <div className="h-px bg-gray-200 my-2" />
+                <div className="flex justify-between items-center">
+                  <span className="font-medium text-lg">Total Price</span>
+                  <span className="font-medium text-lg">€ 8,70</span>
+                </div>
+              </div>
+
+              {/* Continue Button */}
+              <Button 
+                className="w-full bg-gray-500 hover:bg-gray-600 h-12 text-lg mt-4"
+                onClick={() => toast.success("Payment option selected!")}
+              >
+                Continue
+              </Button>
+            </motion.div>
+          )}
 
           {selectedType === "professional" && (
             <motion.div
