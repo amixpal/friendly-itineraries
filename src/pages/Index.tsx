@@ -38,45 +38,40 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 p-4 md:p-6">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="max-w-4xl mx-auto pt-6 md:pt-12"
-      >
-        <h1 className="text-3xl md:text-4xl font-semibold text-center mb-2 text-gray-800 px-4">
-          Trip Details
-        </h1>
-        <p className="text-center text-gray-600 mb-8 md:mb-12 px-4">
-          Configure your trip settings
-        </p>
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-white rounded-lg shadow-lg overflow-hidden">
+        <div className="bg-primary p-4">
+          <h1 className="text-2xl font-semibold text-white">
+            Trip Details
+          </h1>
+        </div>
 
-        <div className="space-y-6 max-w-2xl mx-auto px-4">
-          <Card className="p-4 md:p-6">
-            <h2 className="text-xl md:text-2xl font-medium mb-4">Trip Type</h2>
-            <div className="grid grid-cols-2 gap-4">
+        <div className="p-4 space-y-6">
+          <Card className="p-4 border">
+            <h2 className="text-lg font-medium mb-4">Trip Type</h2>
+            <div className="space-y-2">
               <button
                 onClick={() => setSelectedType("personal")}
-                className={`flex flex-col items-center p-4 rounded-lg border-2 transition-all ${
+                className={`w-full flex items-center p-3 rounded-lg border transition-all ${
                   selectedType === "personal"
                     ? "border-primary bg-primary/5"
                     : "border-gray-200 hover:border-gray-300"
                 }`}
               >
-                <User className={`w-6 h-6 ${selectedType === "personal" ? "text-primary" : "text-gray-600"}`} />
-                <span className="mt-2 font-medium">Personal</span>
+                <User className={`w-5 h-5 ${selectedType === "personal" ? "text-primary" : "text-gray-600"}`} />
+                <span className="ml-3 font-medium">Personal</span>
               </button>
               
               <button
                 onClick={() => setSelectedType("professional")}
-                className={`flex flex-col items-center p-4 rounded-lg border-2 transition-all ${
+                className={`w-full flex items-center p-3 rounded-lg border transition-all ${
                   selectedType === "professional"
                     ? "border-primary bg-primary/5"
                     : "border-gray-200 hover:border-gray-300"
                 }`}
               >
-                <Briefcase className={`w-6 h-6 ${selectedType === "professional" ? "text-primary" : "text-gray-600"}`} />
-                <span className="mt-2 font-medium">Professional</span>
+                <Briefcase className={`w-5 h-5 ${selectedType === "professional" ? "text-primary" : "text-gray-600"}`} />
+                <span className="ml-3 font-medium">Professional</span>
               </button>
             </div>
           </Card>
@@ -86,13 +81,9 @@ const Index = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <Card className="p-4 md:p-6">
-                <h2 className="text-xl md:text-2xl font-medium mb-4">Whitelist Management</h2>
-                <p className="text-gray-600 mb-4">
-                  Add email addresses to the whitelist for professional trip access
-                </p>
-                
-                <div className="flex gap-3 mb-6">
+              <Card className="p-4 border">
+                <h2 className="text-lg font-medium mb-4">Whitelist Management</h2>
+                <div className="flex gap-2 mb-4">
                   <Input
                     type="email"
                     placeholder="Enter email address"
@@ -100,22 +91,21 @@ const Index = () => {
                     onChange={(e) => setNewEmail(e.target.value)}
                     className="flex-1"
                   />
-                  <Button onClick={addToWhitelist}>
-                    <Plus className="w-4 h-4 mr-2" />
-                    Add
+                  <Button onClick={addToWhitelist} size="sm">
+                    <Plus className="w-4 h-4" />
                   </Button>
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {whitelist.map((email) => (
                     <motion.div
                       key={email}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: 20 }}
-                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                      className="flex items-center justify-between p-2 bg-gray-50 rounded-lg"
                     >
-                      <span className="text-gray-700">{email}</span>
+                      <span className="text-sm text-gray-700">{email}</span>
                       <Button
                         variant="ghost"
                         size="sm"
@@ -136,17 +126,16 @@ const Index = () => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              <Card className="p-4 md:p-6">
-                <h2 className="text-xl md:text-2xl font-medium mb-4">Personal Trip Details</h2>
-                <p className="text-gray-600">
+              <Card className="p-4 border">
+                <h2 className="text-lg font-medium mb-4">Personal Trip Details</h2>
+                <p className="text-sm text-gray-600">
                   Configure your personal trip settings here
                 </p>
-                {/* Add your personal trip form fields here */}
               </Card>
             </motion.div>
           )}
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };
