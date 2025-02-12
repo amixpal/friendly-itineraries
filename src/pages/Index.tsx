@@ -3,18 +3,38 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Briefcase, User } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Briefcase, User, Plus, X } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { toast } from "sonner";
 
 const Index = () => {
-  const navigate = useNavigate();
   const [selectedType, setSelectedType] = useState<string | null>(null);
+  const [whitelist, setWhitelist] = useState<string[]>([]);
+  const [newEmail, setNewEmail] = useState("");
   const isMobile = useIsMobile();
 
-  const handleSelection = (type: string) => {
-    setSelectedType(type);
-    navigate(`/${type}-trip`);
+  const addToWhitelist = () => {
+    if (!newEmail) return;
+    
+    if (!newEmail.includes("@")) {
+      toast.error("Please enter a valid email address");
+      return;
+    }
+    
+    if (whitelist.includes(newEmail)) {
+      toast.error("This email is already in the whitelist");
+      return;
+    }
+    
+    setWhitelist([...whitelist, newEmail]);
+    setNewEmail("");
+    toast.success("Email added to whitelist");
+  };
+
+  const removeFromWhitelist = (email: string) => {
+    setWhitelist(whitelist.filter((e) => e !== email));
+    toast.success("Email removed from whitelist");
   };
 
   return (
@@ -25,60 +45,106 @@ const Index = () => {
         className="max-w-4xl mx-auto pt-6 md:pt-12"
       >
         <h1 className="text-3xl md:text-4xl font-semibold text-center mb-2 text-gray-800 px-4">
-          Select Your Trip Type
+          Trip Details
         </h1>
         <p className="text-center text-gray-600 mb-8 md:mb-12 px-4">
-          Choose between personal or professional travel
+          Configure your trip settings
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 max-w-2xl mx-auto px-4">
-          <motion.div
-            whileHover={!isMobile ? { scale: 1.02 } : undefined}
-            whileTap={{ scale: 0.98 }}
-          >
-            <Card
-              className={`p-4 md:p-6 cursor-pointer transition-all duration-200 ${
-                selectedType === "personal"
-                  ? "border-2 border-primary"
-                  : "hover:border-gray-300"
-              }`}
-              onClick={() => handleSelection("personal")}
-            >
-              <div className="flex flex-col items-center text-center p-4 md:p-6">
-                <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-full flex items-center justify-center mb-3 md:mb-4">
-                  <User className="w-6 h-6 md:w-8 md:h-8 text-primary" />
-                </div>
-                <h2 className="text-xl md:text-2xl font-medium mb-2">Personal Trip</h2>
-                <p className="text-gray-600 text-sm md:text-base">
-                  Plan your personal journey with ease
-                </p>
-              </div>
-            </Card>
-          </motion.div>
+        <div className="space-y-6 max-w-2xl mx-auto px-4">
+          <Card className="p-4 md:p-6">
+            <h2 className="text-xl md:text-2xl font-medium mb-4">Trip Type</h2>
+            <div className="grid grid-cols-2 gap-4">
+              <button
+                onClick={() => setSelectedType("personal")}
+                className={`flex flex-col items-center p-4 rounded-lg border-2 transition-all ${
+                  selectedType === "personal"
+                    ? "border-primary bg-primary/5"
+                    : "border-gray-200 hover:border-gray-300"
+                }`}
+              >
+                <User className={`w-6 h-6 ${selectedType === "personal" ? "text-primary" : "text-gray-600"}`} />
+                <span className="mt-2 font-medium">Personal</span>
+              </button>
+              
+              <button
+                onClick={() => setSelectedType("professional")}
+                className={`flex flex-col items-center p-4 rounded-lg border-2 transition-all ${
+                  selectedType === "professional"
+                    ? "border-primary bg-primary/5"
+                    : "border-gray-200 hover:border-gray-300"
+                }`}
+              >
+                <Briefcase className={`w-6 h-6 ${selectedType === "professional" ? "text-primary" : "text-gray-600"}`} />
+                <span className="mt-2 font-medium">Professional</span>
+              </button>
+            </div>
+          </Card>
 
-          <motion.div
-            whileHover={!isMobile ? { scale: 1.02 } : undefined}
-            whileTap={{ scale: 0.98 }}
-          >
-            <Card
-              className={`p-4 md:p-6 cursor-pointer transition-all duration-200 ${
-                selectedType === "professional"
-                  ? "border-2 border-primary"
-                  : "hover:border-gray-300"
-              }`}
-              onClick={() => handleSelection("professional")}
+          {selectedType === "professional" && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
             >
-              <div className="flex flex-col items-center text-center p-4 md:p-6">
-                <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-full flex items-center justify-center mb-3 md:mb-4">
-                  <Briefcase className="w-6 h-6 md:w-8 md:h-8 text-primary" />
-                </div>
-                <h2 className="text-xl md:text-2xl font-medium mb-2">Professional Trip</h2>
-                <p className="text-gray-600 text-sm md:text-base">
-                  Business travel with whitelist access
+              <Card className="p-4 md:p-6">
+                <h2 className="text-xl md:text-2xl font-medium mb-4">Whitelist Management</h2>
+                <p className="text-gray-600 mb-4">
+                  Add email addresses to the whitelist for professional trip access
                 </p>
-              </div>
-            </Card>
-          </motion.div>
+                
+                <div className="flex gap-3 mb-6">
+                  <Input
+                    type="email"
+                    placeholder="Enter email address"
+                    value={newEmail}
+                    onChange={(e) => setNewEmail(e.target.value)}
+                    className="flex-1"
+                  />
+                  <Button onClick={addToWhitelist}>
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add
+                  </Button>
+                </div>
+
+                <div className="space-y-3">
+                  {whitelist.map((email) => (
+                    <motion.div
+                      key={email}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 20 }}
+                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                    >
+                      <span className="text-gray-700">{email}</span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeFromWhitelist(email)}
+                        className="text-gray-500 hover:text-red-500"
+                      >
+                        <X className="w-4 h-4" />
+                      </Button>
+                    </motion.div>
+                  ))}
+                </div>
+              </Card>
+            </motion.div>
+          )}
+
+          {selectedType === "personal" && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <Card className="p-4 md:p-6">
+                <h2 className="text-xl md:text-2xl font-medium mb-4">Personal Trip Details</h2>
+                <p className="text-gray-600">
+                  Configure your personal trip settings here
+                </p>
+                {/* Add your personal trip form fields here */}
+              </Card>
+            </motion.div>
+          )}
         </div>
       </motion.div>
     </div>
